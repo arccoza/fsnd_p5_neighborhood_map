@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+}
+
+a {
+  text-decoration: none;
+}
+
+b, em {
+  font-weight: 500;
+}
+
+body {
+  background-color: /*#fff*/ /*#009688*/ /*#1c1440*/ #00BCD4;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-between;
+  font-family: Roboto, sans-serif;
+  color: #fff;
+}
