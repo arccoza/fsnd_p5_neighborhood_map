@@ -16,7 +16,7 @@ const src = {
 const dest = 'pub'
 
 exports.clean = function*(fly) {
-    yield fly.clear([dest]);
+  yield fly.clear([dest]);
 }
 
 exports.js = function*(fly) {
@@ -69,7 +69,7 @@ if (require && require.main === module) {
     ]
   })
 
-  fly.start('js')
+  fly.start('default')
     .then(res => print(res))
     .catch(err => {
       console.error(err)
