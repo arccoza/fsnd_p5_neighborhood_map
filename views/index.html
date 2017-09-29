@@ -20,6 +20,21 @@
   </script>
 </head>
 <body>
-  <div id="root">
+  <div class="root">
+      <div class="column column--left">
+        <header class="appbar appbar--left">
+          <input type="text" name="search" placeholder="Search"
+            class="field" data-bind="textInput: search">
+        </header>
+        <section class="list" data-bind="foreach: placesSearch">
+          <div class="list__item">
+            <a href="" data-bind="text: $data"></a>
+          </div>
+        </section>
+      </div>
+
+      <div class="column column--right">
+        <header class="appbar appbar--right"></header>
+      </div>
   </div>
 </body>
