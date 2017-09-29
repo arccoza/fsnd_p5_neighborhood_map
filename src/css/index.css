@@ -165,3 +165,14 @@ body, .column {
   padding: 0 2em;
   border-bottom: 1px solid #e8e8e8;
 }
+
+.map {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+}
+
+.map__area {
+  flex: 1;
+}
