@@ -44,16 +44,26 @@ body, .column {
   justify-content: space-between;
 }
 
-.appbar {
-  position: relative;
-  /*background-color: #222;*/
-  height: 3.5em;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  align-content: center;
-  align-items: center;
-  border-bottom: 1px solid #c8c8c8;
+.icon {
+  width: 1em;
+  height: 1em;
+  fill: #888;
+  /*transition: opacity 0.25s, width 0.25s, height 0.25s;*/
+}
+
+.icon--hidden {
+  /*width: 0 !important;
+  height: 0 !important;
+  opacity: 0;*/
+  display: none;
+}
+
+.icon--1\.5x {
+  font-size: 2em;
+}
+
+.icon--2x {
+  font-size: 2em;
 }
 
 .field {
@@ -74,17 +84,70 @@ body, .column {
 
 .column {
   justify-content: flex-start;
+  transition: flex 0.25s;
 }
 
 .column--left {
   position: relative;
-  flex: 1;
+  /*flex: 1;*/
 }
 
 .column--right {
   position: relative;
   flex: 3;
   border-left: 1px solid #c8c8c8;
+}
+
+.column--hidden {
+  flex: 0;
+}
+
+.appbar {
+  position: relative;
+  /*background-color: #222;*/
+  height: 3.5em;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-content: center;
+  align-items: center;
+  border-bottom: 1px solid #c8c8c8;
+}
+
+.appbar--left > :first-child {
+  flex: 1;
+  text-align: center;
+  margin: 0 0 0 1em;
+}
+
+.appbar--left > :last-child {
+  width: 1em;
+  margin: 0 0.5em;
+}
+
+.appbar--right > :first-child {
+  width: 1em;
+  margin: 0 0.5em;
+}
+
+.appbar--right > :last-child {
+  flex: 1;
+  text-align: center;
+}
+
+.menu {
+  position: relative;
+  width: 25vw;
+  left: 0;
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  transition: margin-left 0.25s;
+}
+
+.menu--hidden {
+  /*position: fixed;*/
+  margin-left: -25vw;
 }
 
 .list {

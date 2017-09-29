@@ -10,9 +10,12 @@ var places = [
 ]
 
 function AppVM() {
+  this.menuShown = ko.observable(true)
+  this.menuHidden = ko.computed(() => !this.menuShown())
+  this.toggleMenu = () => this.menuShown(!this.menuShown())
+
   this.search = ko.observable()
   this.places = ko.observableArray(places)
-
   this.placesSearch = ko.computed(() => {
     var s = this.search()
 
