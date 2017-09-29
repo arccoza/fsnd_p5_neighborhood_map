@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/arccoza/fsnd_p5_neighborhood_map#readme",
   "dependencies": {
+    "express": "^4.16.0",
     "knockout": "^3.4.2"
   },
   "devDependencies": {
