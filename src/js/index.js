@@ -76,7 +76,7 @@ function PlacesVM(places) {
     }
     return this.list()
   })
-  this.selected = ko.observable(0)
+  this.selected = ko.observable()
 }
 
 function AppVM({places, map}) {
