@@ -88,8 +88,14 @@ function wikiSearch(topic) {
   }
 
   return fetch(
-    `https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${topic}&limit=1&namespace=0&format=json`,
+    `https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${topic}&limit=1&namespace=0&format=json&redirects=resolve`,
     opts)
+  .then(resp => {
+    if (resp.ok)
+      return resp.json()
+    else
+      throw resp
+  })
 }
 
-wikiSearch('Durban').then(resp => print(resp)).catch(err => print(err))
+wikiSearch('Durban, South Africa').then(resp => print(resp)).catch(err => print(err))
