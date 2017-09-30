@@ -24,6 +24,16 @@ var places = [
     position: {lat: -29.8653737, lng: 31.0432985},
     address: '17 Erskine Terrace, South Beach, Durban, 4001, South Africa',
   },
+  {
+    name: 'Moses Mabhida Stadium',
+    position: {lat: -29.8289524, lng: 31.0281982},
+    address: '44 Isaiah Ntshangase Rd, Stamford Hill, Durban, 4023, South Africa',
+  },
+  {
+    name: 'People\'s Park',
+    position: {lat: -29.8358271, lng: 31.0301228},
+    address: '65 Masabalala Yengwa Ave, Stamford Hill, Durban, 4025, South Africa',
+  },
 ]
 
 // REF: https://stackoverflow.com/questions/24413766/how-to-use-svg-markers-in-google-maps-api-v3
