@@ -88,6 +88,17 @@ function AppVM({places, map}) {
 
 function Marker(props) {
   var m = new google.maps.Marker(props)
+  m.info = new google.maps.InfoWindow({content: 'Loading...'})
+
+  wikiSearch(props.title)
+  .catch(err => m.info = new google.maps.InfoWindow({content: 'Failed to load info.'}))
+  .then(info => {
+    m.info.setContent(
+      `<h1>${info.title}</h1>
+      <p>${info.summary}</p>
+      <p><a href="${info.link}">See more info on Wikipedia</a></p>`
+    )
+  })
 
   if (props.onClick)
     m.addListener('click', props.onClick.bind(null, m))
@@ -98,6 +109,10 @@ function Marker(props) {
     else {
       this._active = !!b
       this.setAnimation(b ? google.maps.Animation.BOUNCE : null)
+      if (this._active)
+        this.info.open(m.getMap(), m)
+      else
+        this.info.close()
     }
   }
 
@@ -126,7 +141,11 @@ function ready() {
   var placesA = appVM.places.filtered()
   var selected = appVM.places.selected()
 
-  places.createMarkers(Marker, {map, icon: markerIcon, animation: google.maps.Animation.DROP})
+  places.createMarkers(Marker, {
+    map,
+    icon: markerIcon,
+    animation: google.maps.Animation.DROP,
+  })
 
   // Map filtered places in the PlacesVM to Google Maps markers.
   appVM.places.filtered.subscribe(placesB => {
