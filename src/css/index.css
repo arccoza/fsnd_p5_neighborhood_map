@@ -139,11 +139,13 @@ body, .column {
 .appbar--left > :last-child {
   width: 1em;
   margin: 0 0.5em;
+  cursor: pointer;
 }
 
 .appbar--right > :first-child {
   width: 1em;
   margin: 0 0.5em;
+  cursor: pointer;
 }
 
 .appbar--right > :last-child {
