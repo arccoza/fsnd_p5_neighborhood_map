@@ -152,6 +152,12 @@ function ready() {
     map,
     icon: markerIcon,
     animation: google.maps.Animation.DROP,
+    onClick(m, p) {
+      appVM.places.selected(p.id)
+    },
+    onInfoClose(m, p) {
+      appVM.places.selected(null)
+    },
   })
 
   // Map filtered places in the PlacesVM to Google Maps markers.
