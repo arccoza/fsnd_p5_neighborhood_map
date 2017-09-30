@@ -5939,6 +5939,40 @@ ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
 })();
 });
 
+function PlacesVM(places) {
+  var _this = this;
+
+  this.filter = knockoutLatest_debug.observable();
+  this.list = knockoutLatest_debug.observableArray(places);
+  this.filtered = knockoutLatest_debug.computed(function () {
+    var f = _this.filter();
+    if (f) {
+      return knockoutLatest_debug.utils.arrayFilter(_this.list(), function (_ref) {
+        var n = _ref.title;
+        return n.toUpperCase().indexOf(f.toUpperCase()) != -1;
+      });
+    }
+    return _this.list();
+  });
+  this.selected = knockoutLatest_debug.observable();
+}
+
+function AppVM(_ref2) {
+  var _this2 = this;
+
+  var places = _ref2.places,
+      map = _ref2.map;
+
+  this.menuShown = knockoutLatest_debug.observable(true);
+  this.menuHidden = knockoutLatest_debug.computed(function () {
+    return !_this2.menuShown();
+  });
+  this.toggleMenu = function () {
+    return _this2.menuShown(!_this2.menuShown());
+  };
+  this.places = new PlacesVM(places);
+}
+
 var mapTheme = [{
   "featureType": "water",
   "elementType": "geometry",
@@ -6156,6 +6190,41 @@ function wikiSearch(topic) {
 
 // wikiSearch('Moses Mabhida Stadium').then(resp => print(resp)).catch(err => print(err))
 
+function Marker(props) {
+  var m = new google.maps.Marker(props);
+
+  // Add an infowindow to this marker.
+  m.info = new google.maps.InfoWindow({ content: 'Loading...' });
+
+  // Load data from Wikipedia and update the infowindow when it is ready.
+  wikiSearch(props.title).catch(function (err) {
+    return m.info = new google.maps.InfoWindow({ content: 'Failed to load info.' });
+  }).then(function (info) {
+    // REF: https://stackoverflow.com/questions/15114963/changing-data-in-the-info-window-with-google-map-markers
+    m.info.setContent('<h1>' + info.title + '</h1>\n      <p>' + info.summary + '</p>\n      <p><a href="' + info.link + '">See more info on Wikipedia</a></p>');
+  });
+
+  if (props.onClick) m.addListener('click', props.onClick.bind(null, m, props));
+
+  if (props.onInfoClose) m.info.addListener('closeclick', props.onInfoClose.bind(null, m, props));
+
+  m.active = function (b) {
+    if (b == null) return this._active;else {
+      this._active = !!b;
+      this.setAnimation(b ? google.maps.Animation.BOUNCE : null);
+      if (this._active) this.info.open(m.getMap(), m);else this.info.close();
+    }
+  };
+
+  return m;
+}
+
+// key: AIzaSyAIThqsGw6NkA5oIJ1Q3nJmQrtA7B8-Uko
+function GMap(el, opts) {
+  var map = new google.maps.Map(el, opts);
+  return map;
+}
+
 function arrayDiff(orig, mod, key) {
   mod = new Map(mod.map(function (b) {
     return [key(b), [b, true]];
@@ -6207,7 +6276,7 @@ var places = [{
   address: '65 Masabalala Yengwa Ave, Stamford Hill, Durban, 4025, South Africa'
 }];
 
-places.createMarkers = function (Marker) {
+places.createMarkers = function (Marker$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var _iteratorNormalCompletion = true;
   var _didIteratorError = false;
@@ -6217,7 +6286,7 @@ places.createMarkers = function (Marker) {
     for (var _iterator = this[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var p = _step.value;
 
-      p.marker = Marker(_extends({}, opts, p));
+      p.marker = Marker$$1(_extends({}, opts, p));
     }
   } catch (err) {
     _didIteratorError = true;
@@ -6252,75 +6321,6 @@ var mapOptions = {
   center: { lat: -29.856849, lng: 31.013158 }, // Durban
   styles: mapTheme
 };
-
-function PlacesVM(places) {
-  var _this = this;
-
-  this.filter = knockoutLatest_debug.observable();
-  this.list = knockoutLatest_debug.observableArray(places);
-  this.filtered = knockoutLatest_debug.computed(function () {
-    var f = _this.filter();
-    if (f) {
-      return knockoutLatest_debug.utils.arrayFilter(_this.list(), function (_ref) {
-        var n = _ref.title;
-        return n.toUpperCase().indexOf(f.toUpperCase()) != -1;
-      });
-    }
-    return _this.list();
-  });
-  this.selected = knockoutLatest_debug.observable();
-}
-
-function AppVM(_ref2) {
-  var _this2 = this;
-
-  var places = _ref2.places,
-      map = _ref2.map;
-
-  this.menuShown = knockoutLatest_debug.observable(true);
-  this.menuHidden = knockoutLatest_debug.computed(function () {
-    return !_this2.menuShown();
-  });
-  this.toggleMenu = function () {
-    return _this2.menuShown(!_this2.menuShown());
-  };
-  this.places = new PlacesVM(places);
-}
-
-function Marker(props) {
-  var m = new google.maps.Marker(props);
-
-  // Add an infowindow to this marker.
-  m.info = new google.maps.InfoWindow({ content: 'Loading...' });
-
-  // Load data from Wikipedia and update the infowindow when it is ready.
-  wikiSearch(props.title).catch(function (err) {
-    return m.info = new google.maps.InfoWindow({ content: 'Failed to load info.' });
-  }).then(function (info) {
-    // REF: https://stackoverflow.com/questions/15114963/changing-data-in-the-info-window-with-google-map-markers
-    m.info.setContent('<h1>' + info.title + '</h1>\n      <p>' + info.summary + '</p>\n      <p><a href="' + info.link + '">See more info on Wikipedia</a></p>');
-  });
-
-  if (props.onClick) m.addListener('click', props.onClick.bind(null, m, props));
-
-  if (props.onInfoClose) m.info.addListener('closeclick', props.onInfoClose.bind(null, m, props));
-
-  m.active = function (b) {
-    if (b == null) return this._active;else {
-      this._active = !!b;
-      this.setAnimation(b ? google.maps.Animation.BOUNCE : null);
-      if (this._active) this.info.open(m.getMap(), m);else this.info.close();
-    }
-  };
-
-  return m;
-}
-
-// key: AIzaSyAIThqsGw6NkA5oIJ1Q3nJmQrtA7B8-Uko
-function GMap(el, opts) {
-  var map = new google.maps.Map(el, opts);
-  return map;
-}
 
 function ready() {
   var map = GMap(document.getElementById('map-area'), mapOptions);
@@ -6360,12 +6360,12 @@ function ready() {
         add = _arrayDiff.add,
         rem = _arrayDiff.rem;
 
-    add.forEach(function (_ref3) {
-      var m = _ref3.marker;
+    add.forEach(function (_ref) {
+      var m = _ref.marker;
       return m.setMap(map);
     });
-    rem.forEach(function (_ref4) {
-      var m = _ref4.marker;
+    rem.forEach(function (_ref2) {
+      var m = _ref2.marker;
       return m.setMap(null);
     });
     placesA = placesB;
