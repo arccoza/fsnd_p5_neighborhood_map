@@ -64,8 +64,8 @@ function Marker(props) {
 }
 
 // key: AIzaSyAIThqsGw6NkA5oIJ1Q3nJmQrtA7B8-Uko
-function initMap() {
-  var map = new google.maps.Map(document.getElementById('map-area'), mapOptions)
+function GMap(el, opts) {
+  var map = new google.maps.Map(el, opts)
 
   var marker = Marker({
     position: new google.maps.LatLng(-29.8645465, 31.0438486),
@@ -80,6 +80,6 @@ function initMap() {
 }
 
 function ready() {
-  var map = initMap()
+  var map = GMap(document.getElementById('map-area'), mapOptions)
   ko.applyBindings(new AppVM({map}))
 }
