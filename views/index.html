@@ -39,7 +39,8 @@
           </header>
 
           <section class="list" data-bind="foreach: places.filtered">
-            <div class="list__item">
+            <div class="list__item"
+              data-bind="click: $parent.places.clicked(id), css: { 'list__item--selected': id == $parent.places.clicked() }">
               <svg class="icon icon--0.75x">
                 <use xlink:href="#big-map-placeholder"></use>
               </svg>

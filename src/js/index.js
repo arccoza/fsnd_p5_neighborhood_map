@@ -11,25 +11,30 @@ window.addEventListener('load', function(ev) {
 
 var places = [
   {
+    id: 0,
     name: 'Durban, South Africa',
     position: {lat: -29.856849, lng: 31.013158},
   },
   {
+    id: 1,
     name: 'uShaka Marine World',
     position: {lat: -29.8653737, lng: 31.0432985},
     address: '1, King Shaka Ave, Point, Point, Durban, 4001, South Africa',
   },
   {
+    id: 2,
     name: 'Surf Riders Food Shack',
     position: {lat: -29.8653737, lng: 31.0432985},
     address: '17 Erskine Terrace, South Beach, Durban, 4001, South Africa',
   },
   {
+    id: 3,
     name: 'Moses Mabhida Stadium',
     position: {lat: -29.8289524, lng: 31.0281982},
     address: '44 Isaiah Ntshangase Rd, Stamford Hill, Durban, 4023, South Africa',
   },
   {
+    id: 4,
     name: 'People\'s Park',
     position: {lat: -29.8358271, lng: 31.0301228},
     address: '65 Masabalala Yengwa Ave, Stamford Hill, Durban, 4025, South Africa',
@@ -63,6 +68,7 @@ function PlacesVM(places) {
     }
     return this.list()
   })
+  this.clicked = ko.observable()
 }
 
 function AppVM({places, map}) {
