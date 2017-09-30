@@ -58,8 +58,16 @@ body, .column {
   display: none;
 }
 
+.icon--0\.5x {
+  font-size: 0.5em;
+}
+
+.icon--0\.75x {
+  font-size: 0.75em;
+}
+
 .icon--1\.5x {
-  font-size: 2em;
+  font-size: 1.5em;
 }
 
 .icon--2x {
@@ -168,6 +176,11 @@ body, .column {
   align-items: center;
   padding: 0 2em;
   border-bottom: 1px solid #e8e8e8;
+}
+
+.list__item > :first-child {
+  margin: 0 1em 0 0;
+  opacity: 0.2;
 }
 
 .map {
