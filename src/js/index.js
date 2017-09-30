@@ -102,10 +102,6 @@ function Marker(props) {
   return m
 }
 
-function Markers({places, map}) {
-
-}
-
 // key: AIzaSyAIThqsGw6NkA5oIJ1Q3nJmQrtA7B8-Uko
 function GMap(el, opts) {
   var map = new google.maps.Map(el, opts)
