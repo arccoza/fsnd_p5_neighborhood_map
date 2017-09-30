@@ -6070,7 +6070,89 @@ var _extends = Object.assign || function (target) {
   return target;
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var slicedToArray = function () {
+  function sliceIterator(arr, i) {
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"]) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
+  return function (arr, i) {
+    if (Array.isArray(arr)) {
+      return arr;
+    } else if (Symbol.iterator in Object(arr)) {
+      return sliceIterator(arr, i);
+    } else {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    }
+  };
+}();
+
 var print$1 = console.log.bind(console);
+
+// https://stackoverflow.com/questions/27457977/searching-wikipedia-using-api
+// https://www.mediawiki.org/wiki/API:Opensearch
+// REF: https://stackoverflow.com/a/43667416/1401702
+// REF: https://www.mediawiki.org/wiki/Manual:CORS#Description
+function wikiSearch(topic) {
+  var opts = {
+    method: 'GET',
+    mode: 'cors'
+  };
+
+  return fetch('https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=' + topic + '&limit=1&namespace=0&format=json&redirects=resolve', opts).then(function (resp) {
+    if (resp.ok) return resp.json();else throw resp;
+  }).then(function (_ref) {
+    var _ref2 = slicedToArray(_ref, 4),
+        title = _ref2[0],
+        _ref2$ = slicedToArray(_ref2[2], 1),
+        summary = _ref2$[0],
+        _ref2$2 = slicedToArray(_ref2[3], 1),
+        link = _ref2$2[0];
+
+    return { title: title, summary: summary, link: link };
+  });
+}
 
 // wikiSearch('Moses Mabhida Stadium').then(resp => print(resp)).catch(err => print(err))
 
@@ -6158,8 +6240,10 @@ var markerIcon = {
   path: 'M262.576,0C160.959,0,78.817,82.164,78.817,183.76c0,137.874,183.76,341.393,183.76,341.393s183.76-203.518,183.76-341.393 C446.336,82.164,364.193,0,262.576,0z M262.576,249.404c-36.257,0-65.644-29.387-65.644-65.644 c0-36.17,29.387-65.644,65.644-65.644s65.644,29.474,65.644,65.644C328.22,220.039,298.834,249.404,262.576,249.404z',
   fillColor: '#ff7ad5',
   fillOpacity: 1,
+  strokeColor: '#eee',
+  strokeOpacity: 1,
   anchor: { x: 525.153 / 2, y: 525.153 },
-  strokeWeight: 0,
+  strokeWeight: 1,
   scale: 0.1
 };
 
@@ -6184,7 +6268,7 @@ function PlacesVM(places) {
     }
     return _this.list();
   });
-  this.selected = knockoutLatest_debug.observable(0);
+  this.selected = knockoutLatest_debug.observable();
 }
 
 function AppVM(_ref2) {
@@ -6206,12 +6290,26 @@ function AppVM(_ref2) {
 function Marker(props) {
   var m = new google.maps.Marker(props);
 
-  if (props.onClick) m.addListener('click', props.onClick.bind(null, m));
+  // Add an infowindow to this marker.
+  m.info = new google.maps.InfoWindow({ content: 'Loading...' });
+
+  // Load data from Wikipedia and update the infowindow when it is ready.
+  wikiSearch(props.title).catch(function (err) {
+    return m.info = new google.maps.InfoWindow({ content: 'Failed to load info.' });
+  }).then(function (info) {
+    // REF: https://stackoverflow.com/questions/15114963/changing-data-in-the-info-window-with-google-map-markers
+    m.info.setContent('<h1>' + info.title + '</h1>\n      <p>' + info.summary + '</p>\n      <p><a href="' + info.link + '">See more info on Wikipedia</a></p>');
+  });
+
+  if (props.onClick) m.addListener('click', props.onClick.bind(null, m, props));
+
+  if (props.onInfoClose) m.info.addListener('closeclick', props.onInfoClose.bind(null, m, props));
 
   m.active = function (b) {
     if (b == null) return this._active;else {
       this._active = !!b;
       this.setAnimation(b ? google.maps.Animation.BOUNCE : null);
+      if (this._active) this.info.open(m.getMap(), m);else this.info.close();
     }
   };
 
@@ -6221,18 +6319,6 @@ function Marker(props) {
 // key: AIzaSyAIThqsGw6NkA5oIJ1Q3nJmQrtA7B8-Uko
 function GMap(el, opts) {
   var map = new google.maps.Map(el, opts);
-
-  var marker = Marker({
-    position: { lat: -29.8645465, lng: 31.0438486 },
-    icon: markerIcon,
-    animation: google.maps.Animation.DROP,
-    map: map,
-    title: 'Snazzy!',
-    onClick: function onClick(m) {
-      return m.active(!m.active());
-    }
-  });
-
   return map;
 }
 
@@ -6240,25 +6326,62 @@ function ready() {
   var map = GMap(document.getElementById('map-area'), mapOptions);
   var appVM = new AppVM({ places: places });
   var placesA = appVM.places.filtered();
+  var selected = appVM.places.selected();
 
-  places.createMarkers(Marker, { map: map, icon: markerIcon, animation: google.maps.Animation.DROP });
+  // Bind marker events to PlacesVM.
+  places.createMarkers(Marker, {
+    map: map,
+    icon: markerIcon,
+    animation: google.maps.Animation.DROP,
+    onClick: function onClick(m, p) {
+      appVM.places.selected(p.id);
+    },
+    onInfoClose: function onInfoClose(m, p) {
+      appVM.places.selected(null);
+    }
+  });
 
+  // Refresh the map after the menu moves. Because there is a transition effect
+  // on the menu, we register once for the idle event first. Just give the map
+  // a little shake after opening/closing the menu to refresh.
+  appVM.menuHidden.subscribe(function () {
+    google.maps.event.addListenerOnce(map, 'idle', function () {
+      return google.maps.event.trigger(map, 'resize');
+    });
+  });
+
+  // Map filtered places in the PlacesVM to Google Maps markers.
   appVM.places.filtered.subscribe(function (placesB) {
+    appVM.places.selected(null); // Deselect any selected places while filtering.
+
     var _arrayDiff = arrayDiff(placesA, placesB, function (v) {
       return v.id;
     }),
         add = _arrayDiff.add,
         rem = _arrayDiff.rem;
 
-    add.forEach(function (_ref4) {
-      var m = _ref4.marker;
+    add.forEach(function (_ref3) {
+      var m = _ref3.marker;
       return m.setMap(map);
     });
-    rem.forEach(function (_ref5) {
-      var m = _ref5.marker;
+    rem.forEach(function (_ref4) {
+      var m = _ref4.marker;
       return m.setMap(null);
     });
     placesA = placesB;
+  });
+
+  // Map selected place in the PlacesVM to the associated Google Maps marker.
+  appVM.places.selected.subscribe(function (id) {
+    var placeA = id == null ? null : placesA.find(function (p) {
+      return p.id == id;
+    });
+    var placeB = selected == null ? null : appVM.places.list().find(function (p) {
+      return p.id == selected;
+    });
+    !placeA ? null : placeA.marker.active(true);
+    !placeB ? null : placeB.marker.active(false);
+    selected = id;
   });
 
   knockoutLatest_debug.applyBindings(appVM);
