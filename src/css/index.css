@@ -106,12 +106,12 @@ body, .column {
 .column--left {
   position: relative;
   /*flex: 1;*/
+  border-right: 1px solid #c8c8c8;
 }
 
 .column--right {
   position: relative;
   flex: 3;
-  border-left: 1px solid #c8c8c8;
 }
 
 .column--hidden {
