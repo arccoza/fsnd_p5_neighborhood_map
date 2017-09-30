@@ -140,9 +140,9 @@ function ready() {
   // Map selected place in the PlacesVM to the associated Google Maps marker.
   appVM.places.selected.subscribe(id => {
     var placeA = id == null ? null : placesA.find(p => p.id == id)
-    var placeB = placeA == null ? null : appVM.places.list().find(p => p.id == selected)
+    var placeB = selected == null ? null : appVM.places.list().find(p => p.id == selected)
     !placeA ? null : placeA.marker.active(true)
-    !(placeA && placeB) ? null : placeB.marker.active(false)
+    !placeB ? null : placeB.marker.active(false)
     selected = id
   })
 
