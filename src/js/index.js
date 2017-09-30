@@ -88,8 +88,10 @@ function AppVM({places, map}) {
 
 function Marker(props) {
   var m = new google.maps.Marker(props)
+  // Add an infowindow to this marker.
   m.info = new google.maps.InfoWindow({content: 'Loading...'})
 
+  // Load data from Wikipedia and update the infowindow when it is ready.
   wikiSearch(props.title)
   .catch(err => m.info = new google.maps.InfoWindow({content: 'Failed to load info.'}))
   .then(info => {
