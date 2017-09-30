@@ -105,7 +105,10 @@ function Marker(props) {
   })
 
   if (props.onClick)
-    m.addListener('click', props.onClick.bind(null, m))
+    m.addListener('click', props.onClick.bind(null, m, props))
+
+  if (props.onInfoClose)
+    m.info.addListener('closeclick', props.onInfoClose.bind(null, m, props))
 
   m.active = function(b) {
     if (b == null)
