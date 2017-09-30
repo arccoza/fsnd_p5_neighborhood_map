@@ -52,7 +52,8 @@ function AppVM({places, map}) {
   this.placesSearch = ko.computed(() => {
     var s = this.search()
     if (s) {
-      return ko.utils.arrayFilter(this.places(), p => p.toUpperCase().indexOf(s.toUpperCase()) != -1)
+      return ko.utils.arrayFilter(this.places(),
+        ({name: n}) => n.toUpperCase().indexOf(s.toUpperCase()) != -1)
     }
     return this.places()
   })
