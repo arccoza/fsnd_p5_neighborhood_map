@@ -20,7 +20,7 @@ var places = [
   {
     id: 1,
     title: 'uShaka Marine World',
-    position: {lat: -29.8653737, lng: 31.0432985},
+    position: {lat: -29.867258, lng: 31.045858},
     address: '1, King Shaka Ave, Point, Point, Durban, 4001, South Africa',
   },
   {
