@@ -12,17 +12,17 @@ window.addEventListener('load', function(ev) {
 var places = [
   {
     name: 'Durban, South Africa',
-    lat: -29.856849, lng: 31.013158
+    position: {lat: -29.856849, lng: 31.013158},
   },
   {
     name: 'uShaka Marine World',
+    position: {lat: -29.8653737, lng: 31.0432985},
     address: '1, King Shaka Ave, Point, Point, Durban, 4001, South Africa',
-    web: 'ushakamarineworld.co.za',
   },
   {
     name: 'Surf Riders Food Shack',
+    position: {lat: -29.8653737, lng: 31.0432985},
     address: '17 Erskine Terrace, South Beach, Durban, 4001, South Africa',
-    web: null,
   },
 ]
 
@@ -42,7 +42,7 @@ var mapOptions = {
   styles: mapTheme,
 }
 
-function AppVM({map}) {
+function AppVM({places, map}) {
   this.menuShown = ko.observable(true)
   this.menuHidden = ko.computed(() => !this.menuShown())
   this.toggleMenu = () => this.menuShown(!this.menuShown())
@@ -81,5 +81,5 @@ function GMap(el, opts) {
 
 function ready() {
   var map = GMap(document.getElementById('map-area'), mapOptions)
-  ko.applyBindings(new AppVM({map}))
+  ko.applyBindings(new AppVM({places, map}))
 }
