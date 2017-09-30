@@ -11,5 +11,5 @@ export function arrayDiff(orig, mod, key) {
   })
   mod.forEach((v, k) => v[1] ? add.push(v[0]) : null)
 
-  return [rem, add]
+  return {add, rem}
 }
