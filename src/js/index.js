@@ -148,6 +148,7 @@ function ready() {
   var placesA = appVM.places.filtered()
   var selected = appVM.places.selected()
 
+  // Bind marker events to PlacesVM.
   places.createMarkers(Marker, {
     map,
     icon: markerIcon,
