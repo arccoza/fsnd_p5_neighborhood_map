@@ -68,7 +68,7 @@ function PlacesVM(places) {
     }
     return this.list()
   })
-  this.clicked = ko.observable(0)
+  this.active = ko.observable(0)
 }
 
 function AppVM({places, map}) {
