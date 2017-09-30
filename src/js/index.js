@@ -124,16 +124,16 @@ function GMap(el, opts) {
 
 function ready() {
   var map = GMap(document.getElementById('map-area'), mapOptions)
-  places.createMarkers(Marker, {map, icon: markerIcon, animation: google.maps.Animation.DROP})
-
   var appVM = new AppVM({places})
   var placesA = appVM.places.filtered()
+
+  places.createMarkers(Marker, {map, icon: markerIcon, animation: google.maps.Animation.DROP})
+
   appVM.places.filtered.subscribe(placesB => {
     var {add, rem} = arrayDiff(placesA, placesB, v => v.id)
     add.forEach(({marker: m}) => m.setMap(map))
     rem.forEach(({marker: m}) => m.setMap(null))
     placesA = placesB
-    print([add, rem])
   })
 
   ko.applyBindings(appVM)
