@@ -1,6 +1,7 @@
 import ko from 'knockout'
 import mapTheme from './map-theme.js'
 import wikiSearch from './wikipedia.js'
+import {arrayDiff} from './utils.js'
 var print = console.log.bind(console)
 
 
