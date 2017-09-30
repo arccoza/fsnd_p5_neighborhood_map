@@ -14,7 +14,7 @@ export function Marker(props) {
     // REF: https://stackoverflow.com/questions/15114963/changing-data-in-the-info-window-with-google-map-markers
     m.info.setContent(
       `<h1>${info.title}</h1>
-      <p>${info.summary}</p>
+      <p>${info.summary == null ? 'No info.' : info.summary}</p>
       <p><a href="${info.link}">See more info on Wikipedia</a></p>`
     )
   })
