@@ -92,6 +92,8 @@ function Marker(props) {
       this.setAnimation(b ? google.maps.Animation.BOUNCE : null)
     }
   }
+
+  return m
 }
 
 function Markers({places, map}) {
