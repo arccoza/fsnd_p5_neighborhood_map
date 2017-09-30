@@ -80,7 +80,20 @@ function AppVM({places, map}) {
 
 function Marker(props) {
   var m = new google.maps.Marker(props)
-  m.addListener('click', props.clicked.bind(null, m))
+  m.addListener('click', props.onClick.bind(null, m))
+
+  m.active = function(b) {
+    if (b == null)
+      return this._active
+    else {
+      this._active = !!b
+      this.setAnimation(b ? google.maps.Animation.BOUNCE : null)
+    }
+  }
+}
+
+function Markers({places, map}) {
+
 }
 
 // key: AIzaSyAIThqsGw6NkA5oIJ1Q3nJmQrtA7B8-Uko
@@ -93,7 +106,7 @@ function GMap(el, opts) {
     animation: google.maps.Animation.DROP,
     map: map,
     title: 'Snazzy!',
-    clicked: (...ev) => print(ev)
+    onClick: (m) => m.active(!m.active())
   })
 
   return map
