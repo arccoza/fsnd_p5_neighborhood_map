@@ -80,7 +80,9 @@ function AppVM({places, map}) {
 
 function Marker(props) {
   var m = new google.maps.Marker(props)
-  m.addListener('click', props.onClick.bind(null, m))
+
+  if (props.onClick)
+    m.addListener('click', props.onClick.bind(null, m))
 
   m.active = function(b) {
     if (b == null)
