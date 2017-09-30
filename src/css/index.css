@@ -82,6 +82,10 @@ body, .column {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.field:focus {
+  background-color: #ff7ad5;
+}
+
 .column {
   justify-content: flex-start;
   transition: flex 0.25s;
