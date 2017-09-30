@@ -6056,75 +6056,213 @@ var mapTheme = [{
   }]
 }];
 
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
+
+var print$1 = console.log.bind(console);
+
+// wikiSearch('Moses Mabhida Stadium').then(resp => print(resp)).catch(err => print(err))
+
+function arrayDiff(orig, mod, key) {
+  mod = new Map(mod.map(function (b) {
+    return [key(b), [b, true]];
+  }));
+
+  var add = [];
+  var rem = orig.filter(function (a) {
+    var v = mod.get(key(a));
+    if (v !== undefined) return v[1] = false; // That's not a mistake, both set and return false.
+    else return true;
+  });
+  mod.forEach(function (v, k) {
+    return v[1] ? add.push(v[0]) : null;
+  });
+
+  return { add: add, rem: rem };
+}
+
 var print = console.log.bind(console);
 
-var places = ['Durban', 'Tokyo', 'Bangkok'];
+// Call ready when the DOM has loaded.
+window.addEventListener('load', function (ev) {
+  ready();
+});
 
-function AppVM() {
+var places = [{
+  id: 0,
+  title: 'Durban, South Africa',
+  position: { lat: -29.856849, lng: 31.013158 }
+}, {
+  id: 1,
+  title: 'uShaka Marine World',
+  position: { lat: -29.8653737, lng: 31.0432985 },
+  address: '1, King Shaka Ave, Point, Point, Durban, 4001, South Africa'
+}, {
+  id: 2,
+  title: 'Surf Riders Food Shack',
+  position: { lat: -29.8653737, lng: 31.0432985 },
+  address: '17 Erskine Terrace, South Beach, Durban, 4001, South Africa'
+}, {
+  id: 3,
+  title: 'Moses Mabhida Stadium',
+  position: { lat: -29.8289524, lng: 31.0281982 },
+  address: '44 Isaiah Ntshangase Rd, Stamford Hill, Durban, 4023, South Africa'
+}, {
+  id: 4,
+  title: 'People\'s Park',
+  position: { lat: -29.8358271, lng: 31.0301228 },
+  address: '65 Masabalala Yengwa Ave, Stamford Hill, Durban, 4025, South Africa'
+}];
+
+places.createMarkers = function (Marker) {
+  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = this[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var p = _step.value;
+
+      p.marker = Marker(_extends({}, opts, p));
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+};
+
+// REF: https://stackoverflow.com/questions/24413766/how-to-use-svg-markers-in-google-maps-api-v3
+var markerIcon = {
+  path: 'M262.576,0C160.959,0,78.817,82.164,78.817,183.76c0,137.874,183.76,341.393,183.76,341.393s183.76-203.518,183.76-341.393 C446.336,82.164,364.193,0,262.576,0z M262.576,249.404c-36.257,0-65.644-29.387-65.644-65.644 c0-36.17,29.387-65.644,65.644-65.644s65.644,29.474,65.644,65.644C328.22,220.039,298.834,249.404,262.576,249.404z',
+  fillColor: '#ff7ad5',
+  fillOpacity: 1,
+  anchor: { x: 525.153 / 2, y: 525.153 },
+  strokeWeight: 0,
+  scale: 0.1
+};
+
+var mapOptions = {
+  zoom: 11,
+  center: { lat: -29.856849, lng: 31.013158 }, // Durban
+  styles: mapTheme
+};
+
+function PlacesVM(places) {
   var _this = this;
+
+  this.filter = knockoutLatest_debug.observable();
+  this.list = knockoutLatest_debug.observableArray(places);
+  this.filtered = knockoutLatest_debug.computed(function () {
+    var f = _this.filter();
+    if (f) {
+      return knockoutLatest_debug.utils.arrayFilter(_this.list(), function (_ref) {
+        var n = _ref.title;
+        return n.toUpperCase().indexOf(f.toUpperCase()) != -1;
+      });
+    }
+    return _this.list();
+  });
+  this.selected = knockoutLatest_debug.observable(0);
+}
+
+function AppVM(_ref2) {
+  var _this2 = this;
+
+  var places = _ref2.places,
+      map = _ref2.map;
 
   this.menuShown = knockoutLatest_debug.observable(true);
   this.menuHidden = knockoutLatest_debug.computed(function () {
-    return !_this.menuShown();
+    return !_this2.menuShown();
   });
   this.toggleMenu = function () {
-    return _this.menuShown(!_this.menuShown());
+    return _this2.menuShown(!_this2.menuShown());
   };
-
-  this.search = knockoutLatest_debug.observable();
-  this.places = knockoutLatest_debug.observableArray(places);
-  this.placesSearch = knockoutLatest_debug.computed(function () {
-    var s = _this.search();
-
-    if (s) {
-      return knockoutLatest_debug.utils.arrayFilter(_this.places(), function (p) {
-        return p.toUpperCase().indexOf(s.toUpperCase()) != -1;
-      });
-    }
-
-    return _this.places();
-  });
+  this.places = new PlacesVM(places);
 }
 
-window.addEventListener('load', function (ev) {
+function Marker(props) {
+  var m = new google.maps.Marker(props);
 
-  knockoutLatest_debug.applyBindings(new AppVM());
-});
+  if (props.onClick) m.addListener('click', props.onClick.bind(null, m));
+
+  m.active = function (b) {
+    if (b == null) return this._active;else {
+      this._active = !!b;
+      this.setAnimation(b ? google.maps.Animation.BOUNCE : null);
+    }
+  };
+
+  return m;
+}
 
 // key: AIzaSyAIThqsGw6NkA5oIJ1Q3nJmQrtA7B8-Uko
-// google.maps.event.addDomListener(window, 'load', initMap);
+function GMap(el, opts) {
+  var map = new google.maps.Map(el, opts);
 
-function initMap() {
-  // Basic options for a simple Google Map
-  // For more options see: https://developers.google.com/maps/documentation/javascript/reference#MapOptions
-  var mapOptions = {
-    // How zoomed in you want the map to start at (always required)
-    zoom: 11,
-
-    // The latitude and longitude to center the map (always required)
-    center: new google.maps.LatLng(40.6700, -73.9400), // New York
-
-    // How you would like to style the map.
-    // This is where you would paste any style found on Snazzy Maps.
-    styles: mapTheme
-  };
-
-  // Get the HTML DOM element that will contain your map
-  // We are using a div with id="map" seen below in the <body>
-  var mapElement = document.getElementById('map-area');
-
-  // Create the Google Map using our element and options defined above
-  var map = new google.maps.Map(mapElement, mapOptions);
-
-  // Let's also add a marker while we're at it
-  var marker = new google.maps.Marker({
-    position: new google.maps.LatLng(40.6700, -73.9400),
+  var marker = Marker({
+    position: { lat: -29.8645465, lng: 31.0438486 },
+    icon: markerIcon,
+    animation: google.maps.Animation.DROP,
     map: map,
-    title: 'Snazzy!'
+    title: 'Snazzy!',
+    onClick: function onClick(m) {
+      return m.active(!m.active());
+    }
   });
+
+  return map;
 }
 
-window.initMap = initMap;
+function ready() {
+  var map = GMap(document.getElementById('map-area'), mapOptions);
+  var appVM = new AppVM({ places: places });
+  var placesA = appVM.places.filtered();
+
+  places.createMarkers(Marker, { map: map, icon: markerIcon, animation: google.maps.Animation.DROP });
+
+  appVM.places.filtered.subscribe(function (placesB) {
+    var _arrayDiff = arrayDiff(placesA, placesB, function (v) {
+      return v.id;
+    }),
+        add = _arrayDiff.add,
+        rem = _arrayDiff.rem;
+
+    add.forEach(function (_ref4) {
+      var m = _ref4.marker;
+      return m.setMap(map);
+    });
+    rem.forEach(function (_ref5) {
+      var m = _ref5.marker;
+      return m.setMap(null);
+    });
+    placesA = placesB;
+  });
+
+  knockoutLatest_debug.applyBindings(appVM);
+}
 
 }());
 
