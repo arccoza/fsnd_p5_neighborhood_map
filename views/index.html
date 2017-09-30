@@ -26,8 +26,8 @@
 
 
   <div class="root">
-      <div class="column column--left" data-bind="css: { 'column--hidden': menuHidden }">
-        <div class="menu" data-bind="css: { 'menu--hidden': menuHidden }">
+      <div class="column column--left column--hidden" data-bind="css: { 'column--hidden': menuHidden }">
+        <div class="menu menu--hidden" data-bind="css: { 'menu--hidden': menuHidden }">
           <header class="appbar appbar--left">
             <input type="text" name="search" placeholder="Search"
               class="field" data-bind="textInput: places.filter">
@@ -62,9 +62,9 @@
             <h3>Neighborhood Map</h3>
           </header>
 
-          <section id="map-area" class="map__area">
+          <div id="map-area" class="map__area">
 
-          </section>
+          </div>
         </div>
       </div>
   </div>
