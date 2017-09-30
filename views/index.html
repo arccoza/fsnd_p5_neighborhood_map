@@ -30,7 +30,7 @@
         <div class="menu" data-bind="css: { 'menu--hidden': menuHidden }">
           <header class="appbar appbar--left">
             <input type="text" name="search" placeholder="Search"
-              class="field" data-bind="textInput: search">
+              class="field" data-bind="textInput: places.filter">
 
             <svg class="icon icon--2x"
               data-bind="click: toggleMenu, css: { 'icon--hidden': menuHidden }">
@@ -38,9 +38,13 @@
             </svg>
           </header>
 
-          <section class="list" data-bind="foreach: placesSearch">
+          <section class="list" data-bind="foreach: places.filtered">
             <div class="list__item">
-              <a href="" data-bind="text: $data"></a>
+              <svg class="icon icon--0.75x">
+                <use xlink:href="#big-map-placeholder"></use>
+              </svg>
+
+              <a href="" data-bind="text: name"></a>
             </div>
           </section>
         </div>
