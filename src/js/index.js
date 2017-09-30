@@ -77,3 +77,19 @@ function ready() {
   ko.applyBindings(new AppVM({map}))
 }
 
+// https://stackoverflow.com/questions/27457977/searching-wikipedia-using-api
+// https://www.mediawiki.org/wiki/API:Opensearch
+// REF: https://stackoverflow.com/a/43667416/1401702
+// REF: https://www.mediawiki.org/wiki/Manual:CORS#Description
+function wikiSearch(topic) {
+  var opts = {
+    method: 'GET',
+    mode: 'cors',
+  }
+
+  return fetch(
+    `https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${topic}&limit=1&namespace=0&format=json`,
+    opts)
+}
+
+wikiSearch('Durban').then(resp => print(resp)).catch(err => print(err))
