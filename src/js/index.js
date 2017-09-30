@@ -129,16 +129,6 @@ function Marker(props) {
 // key: AIzaSyAIThqsGw6NkA5oIJ1Q3nJmQrtA7B8-Uko
 function GMap(el, opts) {
   var map = new google.maps.Map(el, opts)
-
-  var marker = Marker({
-    position: {lat: -29.8645465, lng: 31.0438486},
-    icon: markerIcon,
-    animation: google.maps.Animation.DROP,
-    map: map,
-    title: 'Snazzy!',
-    onClick: (m) => print(m)
-  })
-
   return map
 }
 
