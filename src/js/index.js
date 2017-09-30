@@ -114,7 +114,7 @@ function GMap(el, opts) {
     animation: google.maps.Animation.DROP,
     map: map,
     title: 'Snazzy!',
-    onClick: (m) => m.active(!m.active())
+    onClick: (m) => print(m)
   })
 
   return map
@@ -141,7 +141,8 @@ function ready() {
   appVM.places.selected.subscribe(id => {
     var placeA = id == null ? null : placesA.find(p => p.id == id)
     var placeB = placeA == null ? null : appVM.places.list().find(p => p.id == selected)
-    !placeA ? null : (placeB.marker.active(false), placeA.marker.active(true))
+    !placeA ? null : placeA.marker.active(true)
+    !(placeA && placeB) ? null : placeB.marker.active(false)
     selected = id
   })
 
