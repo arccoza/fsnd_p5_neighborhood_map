@@ -176,11 +176,21 @@ body, .column {
   align-items: center;
   padding: 0 2em;
   border-bottom: 1px solid #e8e8e8;
+  cursor: pointer;
 }
 
 .list__item > :first-child {
   margin: 0 1em 0 0;
   opacity: 0.2;
+}
+
+.list__item--selected {
+  background-color: #f0f0f0;
+}
+
+.list__item--selected > * {
+  color: #f32ebf;
+  fill: #f32ebf;
 }
 
 .map {
