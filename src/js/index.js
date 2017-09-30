@@ -42,21 +42,24 @@ var mapOptions = {
   styles: mapTheme,
 }
 
+function PlacesVM(places) {
+  this.filter = ko.observable()
+  this.list = ko.observableArray(places)
+  this.filtered = ko.computed(() => {
+    var f = this.filter()
+    if (f) {
+      return ko.utils.arrayFilter(this.list(),
+        ({name: n}) => n.toUpperCase().indexOf(f.toUpperCase()) != -1)
+    }
+    return this.list()
+  })
+}
+
 function AppVM({places, map}) {
   this.menuShown = ko.observable(true)
   this.menuHidden = ko.computed(() => !this.menuShown())
   this.toggleMenu = () => this.menuShown(!this.menuShown())
-
-  this.search = ko.observable()
-  this.places = ko.observableArray(places)
-  this.placesSearch = ko.computed(() => {
-    var s = this.search()
-    if (s) {
-      return ko.utils.arrayFilter(this.places(),
-        ({name: n}) => n.toUpperCase().indexOf(s.toUpperCase()) != -1)
-    }
-    return this.places()
-  })
+  this.places = new PlacesVM(places)
 }
 
 function Marker(props) {
