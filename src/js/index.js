@@ -58,16 +58,22 @@ function AppVM({map}) {
   })
 }
 
+function Marker(props) {
+  var m = new google.maps.Marker(props)
+  m.addListener('click', props.clicked.bind(null, m))
+}
+
 // key: AIzaSyAIThqsGw6NkA5oIJ1Q3nJmQrtA7B8-Uko
 function initMap() {
   var map = new google.maps.Map(document.getElementById('map-area'), mapOptions)
 
-  var marker = new google.maps.Marker({
+  var marker = Marker({
     position: new google.maps.LatLng(-29.8645465, 31.0438486),
     icon: markerIcon,
     animation: google.maps.Animation.DROP,
     map: map,
-    title: 'Snazzy!'
+    title: 'Snazzy!',
+    clicked: (...ev) => print(ev)
   })
 
   return map
