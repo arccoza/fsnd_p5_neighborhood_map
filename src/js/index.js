@@ -96,6 +96,7 @@ function wikiSearch(topic) {
     else
       throw resp
   })
+  .then(([title,,[summary],[link]]) => ({title, summary, link}))
 }
 
-wikiSearch('Durban, South Africa').then(resp => print(resp)).catch(err => print(err))
+wikiSearch('Moses Mabhida Stadium').then(resp => print(resp)).catch(err => print(err))
