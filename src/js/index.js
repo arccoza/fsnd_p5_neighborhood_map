@@ -1,6 +1,6 @@
 import ko from 'knockout'
 import mapTheme from './map-theme.js'
-import wikiSearch from './wikipedia.js'
+import {GMap, Marker} from './google.js'
 import {arrayDiff} from './utils.js'
 var print = console.log.bind(console)
 
@@ -84,52 +84,6 @@ function AppVM({places, map}) {
   this.menuHidden = ko.computed(() => !this.menuShown())
   this.toggleMenu = () => this.menuShown(!this.menuShown())
   this.places = new PlacesVM(places)
-}
-
-function Marker(props) {
-  var m = new google.maps.Marker(props)
-
-  // Add an infowindow to this marker.
-  m.info = new google.maps.InfoWindow({content: 'Loading...'})
-
-  // Load data from Wikipedia and update the infowindow when it is ready.
-  wikiSearch(props.title)
-  .catch(err => m.info = new google.maps.InfoWindow({content: 'Failed to load info.'}))
-  .then(info => {
-    // REF: https://stackoverflow.com/questions/15114963/changing-data-in-the-info-window-with-google-map-markers
-    m.info.setContent(
-      `<h1>${info.title}</h1>
-      <p>${info.summary}</p>
-      <p><a href="${info.link}">See more info on Wikipedia</a></p>`
-    )
-  })
-
-  if (props.onClick)
-    m.addListener('click', props.onClick.bind(null, m, props))
-
-  if (props.onInfoClose)
-    m.info.addListener('closeclick', props.onInfoClose.bind(null, m, props))
-
-  m.active = function(b) {
-    if (b == null)
-      return this._active
-    else {
-      this._active = !!b
-      this.setAnimation(b ? google.maps.Animation.BOUNCE : null)
-      if (this._active)
-        this.info.open(m.getMap(), m)
-      else
-        this.info.close()
-    }
-  }
-
-  return m
-}
-
-// key: AIzaSyAIThqsGw6NkA5oIJ1Q3nJmQrtA7B8-Uko
-function GMap(el, opts) {
-  var map = new google.maps.Map(el, opts)
-  return map
 }
 
 function ready() {
