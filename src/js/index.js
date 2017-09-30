@@ -124,14 +124,25 @@ function ready() {
   var map = GMap(document.getElementById('map-area'), mapOptions)
   var appVM = new AppVM({places})
   var placesA = appVM.places.filtered()
+  var selected = appVM.places.selected()
 
   places.createMarkers(Marker, {map, icon: markerIcon, animation: google.maps.Animation.DROP})
 
+  // Map filtered places in the PlacesVM to Google Maps markers.
   appVM.places.filtered.subscribe(placesB => {
+    appVM.places.selected(null)  // Deselect any selected places while filtering.
     var {add, rem} = arrayDiff(placesA, placesB, v => v.id)
     add.forEach(({marker: m}) => m.setMap(map))
     rem.forEach(({marker: m}) => m.setMap(null))
     placesA = placesB
+  })
+
+  // Map selected place in the PlacesVM to the associated Google Maps marker.
+  appVM.places.selected.subscribe(id => {
+    var placeA = id == null ? null : placesA.find(p => p.id == id)
+    var placeB = placeA == null ? null : appVM.places.list().find(p => p.id == selected)
+    !placeA ? null : (placeB.marker.active(false), placeA.marker.active(true))
+    selected = id
   })
 
   ko.applyBindings(appVM)
