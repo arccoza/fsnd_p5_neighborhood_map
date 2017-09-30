@@ -151,6 +151,14 @@ function ready() {
     },
   })
 
+  // Refresh the map after the menu moves. Because there is a transition effect
+  // on the menu, we register once for the idle event first. Just give the map
+  // a little shake after opening/closing the menu to refresh.
+  appVM.menuHidden.subscribe(() => {
+    google.maps.event.addListenerOnce(map, 'idle',
+      () => google.maps.event.trigger(map, 'resize'))
+  })
+
   // Map filtered places in the PlacesVM to Google Maps markers.
   appVM.places.filtered.subscribe(placesB => {
     appVM.places.selected(null)  // Deselect any selected places while filtering.
