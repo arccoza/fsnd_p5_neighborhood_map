@@ -13,7 +13,6 @@ export function Marker(props) {
 
   // Load data from Wikipedia and update the infowindow when it is ready.
   wikiSearch(props.title)
-    .catch(() => m.info = new google.maps.InfoWindow({content: 'Failed to load info.'}))
     .then(info => {
       // REF: https://stackoverflow.com/questions/15114963/changing-data-in-the-info-window-with-google-map-markers
       m.info.setContent(
@@ -22,7 +21,8 @@ export function Marker(props) {
         ${info.summary == null ? '' :
         `<p><a target="_blank" href="${info.link}">See more info on Wikipedia</a></p>`}` // eslint-disable-line indent
       );
-    });
+    })
+    .catch(() => m.info.setContent('Failed to load info.'));
 
   // If the place props have an onClick fn, bind it.
   if (props.onClick)
