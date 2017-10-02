@@ -17,7 +17,8 @@ export function Marker(props) {
     m.info.setContent(
       `<h1>${info.title}</h1>
       <p>${info.summary == null ? 'No info.' : info.summary}</p>
-      ${info.summary == null ? '' : `<p><a href="${info.link}">See more info on Wikipedia</a></p>`}`
+      ${info.summary == null ? '' :
+      `<p><a target="_blank" href="${info.link}">See more info on Wikipedia</a></p>`}`
     )
   })
 
