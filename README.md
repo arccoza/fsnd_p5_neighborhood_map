@@ -19,6 +19,12 @@ You should use a modern browser to view the project.
 You don't have to build the project, the latest build files are included in the repo in the `pub` directory.
 If you want to run the build script (using flyjs/taskr) you can run `node flyfile.js`.
 
+## APIs Used
+
+* Google Maps
+
+* Wikipedia OpenSearch
+
 ## Screenshot
 
 <img src="screenshot.png">
