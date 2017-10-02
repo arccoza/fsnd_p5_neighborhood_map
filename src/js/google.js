@@ -1,6 +1,7 @@
 import wikiSearch from './wikipedia.js'
 
-
+// A factory function for generating Google Maps Markers
+// with some default settings and additional properties.
 // REF: https://developers.google.com/maps/documentation/
 export function Marker(props) {
   var m = new google.maps.Marker(props)
@@ -20,12 +21,18 @@ export function Marker(props) {
     )
   })
 
+  // If the place props have an onClick fn, bind it.
   if (props.onClick)
     m.addListener('click', props.onClick.bind(null, m, props))
 
+  // If the place props have an onInfoClose fn, bind it.
   if (props.onInfoClose)
     m.info.addListener('closeclick', props.onInfoClose.bind(null, m, props))
 
+  // A special method property, called without args, returns the current state.
+  // Called with true or false, sets state.
+  // When active == true a group of associated features are shown,
+  // and hidden when active == false.
   m.active = function(b) {
     if (b == null)
       return this._active
