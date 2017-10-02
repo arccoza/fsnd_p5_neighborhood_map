@@ -45,7 +45,6 @@ export function Marker(props) {
       // constant, the problem seems to vanish.
       // REF: https://stackoverflow.com/a/38921305/1401702
       this.setAnimation(b ? google.maps.Animation.BOUNCE : -1)
-      console.log(this.getAnimation())
       if (this._active)
         this.info.open(m.getMap(), m)
       else
