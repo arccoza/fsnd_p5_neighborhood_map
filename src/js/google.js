@@ -39,7 +39,13 @@ export function Marker(props) {
       return this._active
     else {  // Set.
       this._active = !!b
-      this.setAnimation(b ? google.maps.Animation.BOUNCE : null)
+      console.log(this.getAnimation())
+      // Stuck animation bug in Chrome when setting to null,
+      // and then back to an animation. Using -1, a nonexistant animation
+      // constant, the problem seems to vanish.
+      // REF: https://stackoverflow.com/a/38921305/1401702
+      this.setAnimation(b ? google.maps.Animation.BOUNCE : -1)
+      console.log(this.getAnimation())
       if (this._active)
         this.info.open(m.getMap(), m)
       else
