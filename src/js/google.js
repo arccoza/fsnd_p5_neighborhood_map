@@ -1,6 +1,7 @@
 import wikiSearch from './wikipedia.js'
 
 
+// REF: https://developers.google.com/maps/documentation/
 export function Marker(props) {
   var m = new google.maps.Marker(props)
 
