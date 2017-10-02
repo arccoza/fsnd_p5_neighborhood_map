@@ -5,7 +5,6 @@ const commonjs = require('rollup-plugin-commonjs')
 const json = require('rollup-plugin-json')
 const replace = require('rollup-plugin-replace')
 const uglify = require('rollup-plugin-uglify-es')
-const print = console.log.bind(console)
 
 
 const src = {
@@ -62,7 +61,6 @@ exports.default = function*(fly) {
 
 
 if (require && require.main === module) {
-  print('oi')
   const fly = new Fly({
     tasks: module.exports,
     plugins: [
@@ -72,7 +70,7 @@ if (require && require.main === module) {
   })
 
   fly.start('default')
-    .then(res => print(res))
+    .then(res => console.log(res))
     .catch(err => {
       console.error(err)
     })

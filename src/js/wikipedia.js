@@ -1,5 +1,3 @@
-var print = console.log.bind(console)
-
 // REF: https://stackoverflow.com/questions/27457977/searching-wikipedia-using-api
 // REF: https://www.mediawiki.org/wiki/API:Main_page
 // REF: https://www.mediawiki.org/wiki/API:Opensearch

@@ -3,7 +3,6 @@ import {AppVM} from './models.js'
 import mapTheme from './map-theme.js'
 import {GMap, Marker} from './google.js'
 import {arrayDiff} from './utils.js'
-var print = console.log.bind(console)
 
 
 // Call ready when the DOM has loaded.
