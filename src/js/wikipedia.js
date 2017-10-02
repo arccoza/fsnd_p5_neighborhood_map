@@ -7,16 +7,16 @@ export default function wikiSearch(topic) {
   var opts = {
     method: 'GET',
     mode: 'cors',
-  }
+  };
 
   return fetch(
     `https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${topic}&limit=1&namespace=0&format=json&redirects=resolve`,
     opts)
-  .then(resp => {
-    if (resp.ok)
-      return resp.json()
-    else
-      throw resp
-  })
-  .then(([title,,[summary],[link]]) => ({title, summary, link}))
+    .then(resp => {
+      if (resp.ok)
+        return resp.json();
+      else
+        throw resp;
+    })
+    .then(([title,,[summary],[link]]) => ({title, summary, link}));
 }

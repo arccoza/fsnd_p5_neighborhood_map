@@ -1,23 +1,23 @@
-const Fly = require("fly")
-const babel = require('rollup-plugin-babel')
-const nodeResolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
-const json = require('rollup-plugin-json')
-const replace = require('rollup-plugin-replace')
-const uglify = require('rollup-plugin-uglify-es')
+const Fly = require('fly');
+const babel = require('rollup-plugin-babel');
+const nodeResolve = require('rollup-plugin-node-resolve');
+const commonjs = require('rollup-plugin-commonjs');
+const json = require('rollup-plugin-json');
+const replace = require('rollup-plugin-replace');
+const uglify = require('rollup-plugin-uglify-es');
 
 
 const src = {
   js: 'src/**/js/index.js',
   css: 'src/**/css/*.css',
   img: 'src/**/img/*'
-}
+};
 
-const dest = 'pub'
+const dest = 'pub';
 
 exports.clean = function*(fly) {
   yield fly.clear([dest]);
-}
+};
 
 exports.js = function*(fly) {
   yield fly.source(src.js).rollup({
@@ -44,20 +44,20 @@ exports.js = function*(fly) {
       sourceMap: true,
       moduleName: 'window'
     }
-  }).target(dest)
-}
+  }).target(dest);
+};
 
 exports.css = function*(fly) {
-  yield fly.source(src.css).target(dest)
-}
+  yield fly.source(src.css).target(dest);
+};
 
 exports.img = function*(fly) {
-  yield fly.source(src.img).target(dest)
-}
+  yield fly.source(src.img).target(dest);
+};
 
 exports.default = function*(fly) {
-  yield fly.serial(['js', 'css', 'img'])
-}
+  yield fly.serial(['js', 'css', 'img']);
+};
 
 
 if (require && require.main === module) {
@@ -67,11 +67,11 @@ if (require && require.main === module) {
       require('fly-clear'),
       require('fly-rollup')
     ]
-  })
+  });
 
   fly.start('default')
-    .then(res => console.log(res))
+    .then(res => console.log(res)) // eslint-disable-line no-console
     .catch(err => {
-      console.error(err)
-    })
+      console.error(err); // eslint-disable-line no-console
+    });
 }

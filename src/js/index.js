@@ -1,12 +1,13 @@
-import ko from 'knockout'
-import {AppVM} from './models.js'
-import mapTheme from './map-theme.js'
-import {GMap, Marker} from './google.js'
-import {arrayDiff} from './utils.js'
+/*global google */
+import ko from 'knockout';
+import {AppVM} from './models.js';
+import mapTheme from './map-theme.js';
+import {GMap, Marker} from './google.js';
+import {arrayDiff} from './utils.js';
 
 
 // Call ready when the DOM has loaded.
-window.addEventListener('load', ready)
+window.addEventListener('load', ready);
 
 var places = [
   {
@@ -65,12 +66,12 @@ var places = [
     title: 'Berea, Durban',
     position: {lat: -29.850833, lng: 30.993056},
   },
-]
+];
 
 places.createMarkers = function(Marker, opts={}) {
   for (var p of this)
-    p.marker = Marker({...opts, ...p})
-}
+    p.marker = Marker(Object.assign({}, opts, p));
+};
 
 // REF: https://stackoverflow.com/questions/24413766/how-to-use-svg-markers-in-google-maps-api-v3
 var markerIcon = {
@@ -82,19 +83,19 @@ var markerIcon = {
   anchor: {x: 525.153/2, y: 525.153},
   strokeWeight: 1,
   scale: 0.1
-}
+};
 
 var mapOptions = {
   zoom: 13,
   center: {lat: -29.856849, lng: 31.013158},  // Durban
   styles: mapTheme,
-}
+};
 
 function ready() {
-  var map = GMap(document.getElementById('map-area'), mapOptions)
-  var appVM = new AppVM({places})
-  var placesA = appVM.places.filtered()
-  var selected = appVM.places.selected()
+  var map = GMap(document.getElementById('map-area'), mapOptions);
+  var appVM = new AppVM({places});
+  var placesA = appVM.places.filtered();
+  var selected = appVM.places.selected();
 
   // Bind marker events to PlacesVM.
   places.createMarkers(Marker, {
@@ -102,12 +103,12 @@ function ready() {
     icon: markerIcon,
     animation: google.maps.Animation.DROP,
     onClick(m, p) {
-      appVM.places.selected(p.id)
+      appVM.places.selected(p.id);
     },
     onInfoClose(m, p) {
-      appVM.places.selected(null)
+      appVM.places.selected(null);
     },
-  })
+  });
 
   // Refresh the map after the menu moves. Because there is a transition effect
   // on the menu, we register once for the idle event first. Just give the map
@@ -115,26 +116,26 @@ function ready() {
   // REF: https://stackoverflow.com/a/31595722/1401702
   appVM.menuHidden.subscribe(() => {
     google.maps.event.addListenerOnce(map, 'idle',
-      () => google.maps.event.trigger(map, 'resize'))
-  })
+      () => google.maps.event.trigger(map, 'resize'));
+  });
 
   // Map filtered places in the PlacesVM to Google Maps markers.
   appVM.places.filtered.subscribe(placesB => {
-    appVM.places.selected(null)  // Deselect any selected places while filtering.
-    var {add, rem} = arrayDiff(placesA, placesB, v => v.id)
-    add.forEach(({marker: m}) => m.setMap(map))
-    rem.forEach(({marker: m}) => m.setMap(null))
-    placesA = placesB
-  })
+    appVM.places.selected(null);  // Deselect any selected places while filtering.
+    var {add, rem} = arrayDiff(placesA, placesB, v => v.id);
+    add.forEach(({marker: m}) => m.setMap(map));
+    rem.forEach(({marker: m}) => m.setMap(null));
+    placesA = placesB;
+  });
 
   // Map selected place in the PlacesVM to the associated Google Maps marker.
   appVM.places.selected.subscribe(id => {
-    var placeA = id == null ? null : placesA.find(p => p.id == id)
-    var placeB = selected == null ? null : appVM.places.list().find(p => p.id == selected)
-    !placeA ? null : placeA.marker.active(true)
-    !placeB ? null : placeB.marker.active(false)
-    selected = id
-  })
+    var placeA = id == null ? null : placesA.find(p => p.id == id);
+    var placeB = selected == null ? null : appVM.places.list().find(p => p.id == selected);
+    !placeA ? null : placeA.marker.active(true);
+    !placeB ? null : placeB.marker.active(false);
+    selected = id;
+  });
 
-  ko.applyBindings(appVM)
+  ko.applyBindings(appVM);
 }
