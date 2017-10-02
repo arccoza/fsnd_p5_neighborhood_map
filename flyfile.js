@@ -4,6 +4,7 @@ const nodeResolve = require('rollup-plugin-node-resolve')
 const commonjs = require('rollup-plugin-commonjs')
 const json = require('rollup-plugin-json')
 const replace = require('rollup-plugin-replace')
+const uglify = require('rollup-plugin-uglify-es')
 const print = console.log.bind(console)
 
 
@@ -35,7 +36,8 @@ exports.js = function*(fly) {
             'node_modules/**',
             '*.json'
           ],
-        })
+        }),
+        uglify(),
       ]
     },
     bundle: {
