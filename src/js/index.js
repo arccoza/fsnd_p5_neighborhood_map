@@ -1,14 +1,23 @@
 /*global google */
 import ko from 'knockout';
 import {AppVM} from './models.js';
-import {places} from './places.js';
 import mapTheme from './map-theme.js';
 import {GMap, Marker} from './google.js';
 import {arrayDiff} from './utils.js';
+import {places} from './places.js';
 
 
-// Call ready when the DOM has loaded.
-window.addEventListener('load', ready);
+// Call ready when the DOM and Google Maps have loaded.
+var domReady = new Promise((res) => window.addEventListener('load', (ev) => res(ev)));
+var mapReady = new Promise((res, rej) => {
+  window.mapLoaded = res;
+  window.mapError = rej;
+});
+
+Promise.all([domReady, mapReady])
+  .then((ev) => ready({ok: true}))
+  .catch((ev) => ready({ok: false}));
+
 
 // REF: https://stackoverflow.com/questions/24413766/how-to-use-svg-markers-in-google-maps-api-v3
 var markerIcon = {
@@ -28,51 +37,56 @@ var mapOptions = {
   styles: mapTheme,
 };
 
-function ready() {
-  var map = GMap(document.getElementById('map-area'), mapOptions);
+function ready({ok}) {
+  // console.log(window.google)
+  var map = !window.google ? null : GMap(document.getElementById('map-area'), mapOptions);
   var appVM = new AppVM({places});
   var placesA = appVM.places.filtered();
   var selected = appVM.places.selected();
 
-  // Bind marker events to PlacesVM.
-  places.createMarkers(Marker, {
-    map,
-    icon: markerIcon,
-    animation: google.maps.Animation.DROP,
-    onClick(m, p) {
-      appVM.places.selected(p.id);
-    },
-    onInfoClose(m, p) {
-      appVM.places.selected(null);
-    },
-  });
+  if (map) {
+    // Bind marker events to PlacesVM.
+    places.createMarkers(Marker, {
+      map,
+      icon: markerIcon,
+      animation: google.maps.Animation.DROP,
+      onClick(m, p) {
+        appVM.places.selected(p.id);
+      },
+      onInfoClose(m, p) {
+        appVM.places.selected(null);
+      },
+    });
 
-  // Refresh the map after the menu moves. Because there is a transition effect
-  // on the menu, we register once for the idle event first. Just give the map
-  // a little shake after opening/closing the menu to refresh.
-  // REF: https://stackoverflow.com/a/31595722/1401702
-  appVM.menuHidden.subscribe(() => {
-    google.maps.event.addListenerOnce(map, 'idle',
-      () => google.maps.event.trigger(map, 'resize'));
-  });
+    // Refresh the map after the menu moves. Because there is a transition effect
+    // on the menu, we register once for the idle event first. Just give the map
+    // a little shake after opening/closing the menu to refresh.
+    // REF: https://stackoverflow.com/a/31595722/1401702
+    appVM.menuHidden.subscribe(() => {
+      google.maps.event.addListenerOnce(map, 'idle',
+        () => google.maps.event.trigger(map, 'resize'));
+    });
 
-  // Map filtered places in the PlacesVM to Google Maps markers.
-  appVM.places.filtered.subscribe(placesB => {
-    appVM.places.selected(null);  // Deselect any selected places while filtering.
-    var {add, rem} = arrayDiff(placesA, placesB, v => v.id);
-    add.forEach(({marker: m}) => m.setMap(map));
-    rem.forEach(({marker: m}) => m.setMap(null));
-    placesA = placesB;
-  });
+    // Map filtered places in the PlacesVM to Google Maps markers.
+    appVM.places.filtered.subscribe(placesB => {
+      appVM.places.selected(null);  // Deselect any selected places while filtering.
+      var {add, rem} = arrayDiff(placesA, placesB, v => v.id);
+      add.forEach(({marker: m}) => m.setMap(map));
+      rem.forEach(({marker: m}) => m.setMap(null));
+      placesA = placesB;
+    });
 
-  // Map selected place in the PlacesVM to the associated Google Maps marker.
-  appVM.places.selected.subscribe(id => {
-    var placeA = id == null ? null : placesA.find(p => p.id == id);
-    var placeB = selected == null ? null : appVM.places.list().find(p => p.id == selected);
-    !placeA ? null : placeA.marker.active(true);
-    !placeB ? null : placeB.marker.active(false);
-    selected = id;
-  });
+    // Map selected place in the PlacesVM to the associated Google Maps marker.
+    appVM.places.selected.subscribe(id => {
+      var placeA = id == null ? null : placesA.find(p => p.id == id);
+      var placeB = selected == null ? null : appVM.places.list().find(p => p.id == selected);
+      !placeA ? null : placeA.marker.active(true);
+      !placeB ? null : placeB.marker.active(false);
+      selected = id;
+    });
+  }
+  else
+    alert('Map loading failed.');
 
   ko.applyBindings(appVM);
 }
