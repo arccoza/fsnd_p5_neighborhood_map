@@ -35,9 +35,9 @@ export function Marker(props) {
   // When active == true a group of associated features are shown,
   // and hidden when active == false.
   m.active = function(b) {
-    if (b == null)
+    if (b == null)  // Get.
       return this._active
-    else {
+    else {  // Set.
       this._active = !!b
       this.setAnimation(b ? google.maps.Animation.BOUNCE : null)
       if (this._active)
