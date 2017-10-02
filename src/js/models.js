@@ -1,6 +1,7 @@
 import ko from 'knockout'
 
 
+// Manages the list of places and the filtering of that list.
 export function PlacesVM(places) {
   this.filter = ko.observable()
   this.list = ko.observableArray(places)
@@ -15,6 +16,7 @@ export function PlacesVM(places) {
   this.selected = ko.observable()
 }
 
+// Manages the UI related props.
 export function AppVM({places, map}) {
   this.menuShown = ko.observable(true)
   this.menuHidden = ko.computed(() => !this.menuShown())

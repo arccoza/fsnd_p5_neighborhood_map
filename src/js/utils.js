@@ -1,3 +1,5 @@
+// An array diffing fn, takes two arrays and returns
+// what was added or removed.
 export function arrayDiff(orig, mod, key) {
   mod = new Map(mod.map(b => [key(b), [b, true]]))
 

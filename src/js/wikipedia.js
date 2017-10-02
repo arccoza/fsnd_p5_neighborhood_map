@@ -22,5 +22,3 @@ export default function wikiSearch(topic) {
   })
   .then(([title,,[summary],[link]]) => ({title, summary, link}))
 }
-
-// wikiSearch('Moses Mabhida Stadium').then(resp => print(resp)).catch(err => print(err))
