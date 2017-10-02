@@ -7,7 +7,7 @@ var print = console.log.bind(console)
 
 
 // Call ready when the DOM has loaded.
-window.addEventListener('load', ev => ready(ev))
+window.addEventListener('load', ready)
 
 var places = [
   {
