@@ -88,7 +88,7 @@ var markerIcon = {
 }
 
 var mapOptions = {
-  zoom: 11,
+  zoom: 13,
   center: {lat: -29.856849, lng: 31.013158},  // Durban
   styles: mapTheme,
 }
