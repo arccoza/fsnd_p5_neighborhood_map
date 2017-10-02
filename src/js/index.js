@@ -115,6 +115,7 @@ function ready() {
   // Refresh the map after the menu moves. Because there is a transition effect
   // on the menu, we register once for the idle event first. Just give the map
   // a little shake after opening/closing the menu to refresh.
+  // REF: https://stackoverflow.com/a/31595722/1401702
   appVM.menuHidden.subscribe(() => {
     google.maps.event.addListenerOnce(map, 'idle',
       () => google.maps.event.trigger(map, 'resize'))

@@ -1,7 +1,8 @@
 var print = console.log.bind(console)
 
-// https://stackoverflow.com/questions/27457977/searching-wikipedia-using-api
-// https://www.mediawiki.org/wiki/API:Opensearch
+// REF: https://stackoverflow.com/questions/27457977/searching-wikipedia-using-api
+// REF: https://www.mediawiki.org/wiki/API:Main_page
+// REF: https://www.mediawiki.org/wiki/API:Opensearch
 // REF: https://stackoverflow.com/a/43667416/1401702
 // REF: https://www.mediawiki.org/wiki/Manual:CORS#Description
 export default function wikiSearch(topic) {
