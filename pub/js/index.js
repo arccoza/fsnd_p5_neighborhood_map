@@ -5989,7 +5989,17 @@ var mapTheme = [{
   }, {
     "lightness": 20
   }]
-}, {
+},
+// {
+//   "featureType": "landscape.man_made",
+//   "elementType": "geometry.fill",
+//   "stylers": [
+//     {
+//       "color": "#eee"
+//     }
+//   ]
+// },
+{
   "featureType": "road.highway",
   "elementType": "geometry.fill",
   "stylers": [{
@@ -6164,8 +6174,9 @@ var slicedToArray = function () {
 
 var print$1 = console.log.bind(console);
 
-// https://stackoverflow.com/questions/27457977/searching-wikipedia-using-api
-// https://www.mediawiki.org/wiki/API:Opensearch
+// REF: https://stackoverflow.com/questions/27457977/searching-wikipedia-using-api
+// REF: https://www.mediawiki.org/wiki/API:Main_page
+// REF: https://www.mediawiki.org/wiki/API:Opensearch
 // REF: https://stackoverflow.com/a/43667416/1401702
 // REF: https://www.mediawiki.org/wiki/Manual:CORS#Description
 function wikiSearch(topic) {
@@ -6190,6 +6201,7 @@ function wikiSearch(topic) {
 
 // wikiSearch('Moses Mabhida Stadium').then(resp => print(resp)).catch(err => print(err))
 
+// REF: https://developers.google.com/maps/documentation/
 function Marker(props) {
   var m = new google.maps.Marker(props);
 
@@ -6201,7 +6213,7 @@ function Marker(props) {
     return m.info = new google.maps.InfoWindow({ content: 'Failed to load info.' });
   }).then(function (info) {
     // REF: https://stackoverflow.com/questions/15114963/changing-data-in-the-info-window-with-google-map-markers
-    m.info.setContent('<h1>' + info.title + '</h1>\n      <p>' + info.summary + '</p>\n      <p><a href="' + info.link + '">See more info on Wikipedia</a></p>');
+    m.info.setContent('<h1>' + info.title + '</h1>\n      <p>' + (info.summary == null ? 'No info.' : info.summary) + '</p>\n      <p><a href="' + info.link + '">See more info on Wikipedia</a></p>');
   });
 
   if (props.onClick) m.addListener('click', props.onClick.bind(null, m, props));
@@ -6246,9 +6258,7 @@ function arrayDiff(orig, mod, key) {
 var print = console.log.bind(console);
 
 // Call ready when the DOM has loaded.
-window.addEventListener('load', function (ev) {
-  ready();
-});
+window.addEventListener('load', ready);
 
 var places = [{
   id: 0,
@@ -6256,24 +6266,46 @@ var places = [{
   position: { lat: -29.856849, lng: 31.013158 }
 }, {
   id: 1,
-  title: 'uShaka Marine World',
-  position: { lat: -29.8653737, lng: 31.0432985 },
-  address: '1, King Shaka Ave, Point, Point, Durban, 4001, South Africa'
+  title: 'Golden Mile, Durban',
+  position: { lat: -29.847707, lng: 31.038169 }
 }, {
   id: 2,
+  title: 'uShaka Marine World',
+  position: { lat: -29.867258, lng: 31.045858 },
+  address: '1, King Shaka Ave, Point, Point, Durban, 4001, South Africa'
+}, {
+  id: 3,
   title: 'Surf Riders Food Shack',
   position: { lat: -29.8653737, lng: 31.0432985 },
   address: '17 Erskine Terrace, South Beach, Durban, 4001, South Africa'
 }, {
-  id: 3,
+  id: 4,
   title: 'Moses Mabhida Stadium',
   position: { lat: -29.8289524, lng: 31.0281982 },
   address: '44 Isaiah Ntshangase Rd, Stamford Hill, Durban, 4023, South Africa'
 }, {
-  id: 4,
-  title: 'People\'s Park',
+  id: 5,
+  title: 'People\'s Park, Moses Mabhida',
   position: { lat: -29.8358271, lng: 31.0301228 },
   address: '65 Masabalala Yengwa Ave, Stamford Hill, Durban, 4025, South Africa'
+}, {
+  id: 6,
+  title: 'The Pavilion mall',
+  position: { lat: -29.848028, lng: 30.936382 },
+  address: '5 Jack Martens Dr, Dawncliffe, Westville, 3629, South Africa'
+}, {
+  id: 7,
+  title: 'Burman Bush',
+  position: { lat: -29.817700, lng: 31.017622 },
+  address: 'Burman Dr, Morningside, Durban, 4001, South Africa'
+}, {
+  id: 8,
+  title: 'The Cenotaph, Durban',
+  position: { lat: -29.858703, lng: 31.025217 }
+}, {
+  id: 9,
+  title: 'Berea, Durban',
+  position: { lat: -29.850833, lng: 30.993056 }
 }];
 
 places.createMarkers = function (Marker$$1) {
@@ -6317,7 +6349,7 @@ var markerIcon = {
 };
 
 var mapOptions = {
-  zoom: 11,
+  zoom: 13,
   center: { lat: -29.856849, lng: 31.013158 }, // Durban
   styles: mapTheme
 };
@@ -6344,6 +6376,7 @@ function ready() {
   // Refresh the map after the menu moves. Because there is a transition effect
   // on the menu, we register once for the idle event first. Just give the map
   // a little shake after opening/closing the menu to refresh.
+  // REF: https://stackoverflow.com/a/31595722/1401702
   appVM.menuHidden.subscribe(function () {
     google.maps.event.addListenerOnce(map, 'idle', function () {
       return google.maps.event.trigger(map, 'resize');
