@@ -71,8 +71,8 @@ function ready({ok}) {
     appVM.places.filtered.subscribe(placesB => {
       appVM.places.selected(null);  // Deselect any selected places while filtering.
       var {add, rem} = arrayDiff(placesA, placesB, v => v.id);
-      add.forEach(({marker: m}) => m.setMap(map));
-      rem.forEach(({marker: m}) => m.setMap(null));
+      add.forEach(({marker: m}) => m.setVisible(true));
+      rem.forEach(({marker: m}) => m.setVisible(false));
       placesA = placesB;
     });
 
